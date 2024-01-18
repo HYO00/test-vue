@@ -12,6 +12,8 @@
     "@tanstack/vue-query": "^5.17.15",
     "@types/vue-router": "^2.0.0",
     "pinia": "^2.1.7",
+    "v-network-graph": "^0.9.14",
+    "vis-data": "^7.1.9",
     "vis-network": "^9.1.9",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",

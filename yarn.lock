@@ -46,6 +46,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dash14/svg-pan-zoom@npm:^3.6.9":
+  version: 3.6.9
+  resolution: "@dash14/svg-pan-zoom@npm:3.6.9"
+  checksum: 15a4a5a75825708aca986741e48d8bccea82e2caa91f5aaa12c738dca7b9eaf755c16dd78b3df9f129bccdcba97fe7f4b02e7726373395acf7b7f07e653271e0
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.19.11":
   version: 0.19.11
   resolution: "@esbuild/aix-ppc64@npm:0.19.11"
@@ -1608,6 +1615,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash-es@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash-es@npm:4.17.21"
+  checksum: fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -1758,6 +1772,13 @@ __metadata:
     minipass: "npm:^3.0.0"
     yallist: "npm:^4.0.0"
   checksum: 64fae024e1a7d0346a1102bb670085b17b7f95bf6cfdf5b128772ec8faf9ea211464ea4add406a3a6384a7d87a0cd1a96263692134323477b4fb43659a6cab78
+  languageName: node
+  linkType: hard
+
+"mitt@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 3ab4fdecf3be8c5255536faa07064d05caa3dd332bd318ff02e04621f7b3069ca1de9106cfe8e7ced675abfc2bec2ce4c4ef321c4a1bb1fb29df8ae090741913
   languageName: node
   linkType: hard
 
@@ -2360,6 +2381,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"v-network-graph@npm:^0.9.14":
+  version: 0.9.14
+  resolution: "v-network-graph@npm:0.9.14"
+  dependencies:
+    "@dash14/svg-pan-zoom": "npm:^3.6.9"
+    lodash-es: "npm:^4.17.21"
+    mitt: "npm:^3.0.1"
+  peerDependencies:
+    d3-force: ^3.0.0
+    vue: ^3.2.45
+  peerDependenciesMeta:
+    d3-force:
+      optional: true
+  checksum: 4795a5a9340c3c3c7637be4167d00df2e46d94a666f958a88b39289186fe985b493f6a2b4d9c064e9aadfb4af382dcb13a0b10b4252d90cd11b8f51f765f22a7
+  languageName: node
+  linkType: hard
+
+"vis-data@npm:^7.1.9":
+  version: 7.1.9
+  resolution: "vis-data@npm:7.1.9"
+  peerDependencies:
+    uuid: ^3.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+    vis-util: ^5.0.1
+  checksum: 2fce50e41862133e4fcdc92d216755b544936288a8586fc2f0afdc8b586ee75acb029e3fa9bbbb48a91e4c35ebc375bdba213e836926564f899ad80e0981d304
+  languageName: node
+  linkType: hard
+
 "vis-network@npm:^9.1.9":
   version: 9.1.9
   resolution: "vis-network@npm:9.1.9"
@@ -2426,6 +2474,8 @@ __metadata:
     pinia: "npm:^2.1.7"
     prettier: "npm:^3.2.3"
     typescript: "npm:4.5.5"
+    v-network-graph: "npm:^0.9.14"
+    vis-data: "npm:^7.1.9"
     vis-network: "npm:^9.1.9"
     vite: "npm:^5.0.8"
     vue: "npm:^3.3.11"
