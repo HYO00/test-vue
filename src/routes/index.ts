@@ -1,9 +1,12 @@
-import HelloWorld from '../components/HelloWorld.vue';
 import  * as VueRouter from 'vue-router'
 import Drop from '../components/Drop.vue';
+import EditCanvasArea from '../components/EditCanvasArea.vue';
+import Drop from '../components/Drop.vue';
+// import Netwrok from '../components/Network.vue'
+
 const routes = [
-  { path: '/hello', component: HelloWorld },
-  { path: '/five', component: Drop },
+  { path: '/', component:  EditCanvasArea  },
+  { path: '/five', component:Drop, },
 ]
 
 // 3. Create the router instance and pass the `routes` option

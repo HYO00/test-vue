@@ -29,6 +29,7 @@ const configs = defineConfigs({
       width: 3,
     },
   },
+  
 })
 
 export default {

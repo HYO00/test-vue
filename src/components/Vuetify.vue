@@ -42,6 +42,7 @@
 import Drag from './Drag.vue';
 
 
+
   export default {
     name: 'App',
     methods: {

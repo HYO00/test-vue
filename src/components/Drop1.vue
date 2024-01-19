@@ -41,7 +41,7 @@ function removeEdge() {
   }
 }
 function exportData () {
-   console.log("ex", graph, graph.data )
+   console.log("ex", graph, nodes, edges, layouts )
   // const text =  graph.value.exportAsSvgText({ embedImages: true })
 }
 

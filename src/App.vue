@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Vuetify from './components/Vuetify.vue';
-
 //import HelloWorld from './components/HelloWorld.vue'
 </script>
 
@@ -9,13 +8,13 @@ import Vuetify from './components/Vuetify.vue';
     <router-link to="/">Home</router-link> |
     <router-link to="/five">About</router-link>
   </div> -->
+
   <Vuetify>
     <template #main>
-      <router-view/>
+        <router-view />
       <!-- <HelloWorld msg="안녕하세요" /> -->
     </template>
   </Vuetify>
-
   <!-- <div>
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
