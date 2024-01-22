@@ -7,8 +7,8 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import VNetworkGraph from "v-network-graph";
-
 import "v-network-graph/lib/style.css"
+import "./style/index.css"
 
 const app = createApp(App)
 const vuetify = createVuetify({

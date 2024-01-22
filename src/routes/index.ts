@@ -1,11 +1,11 @@
 import  * as VueRouter from 'vue-router'
 import Drop from '../components/Drop.vue';
 import EditCanvasArea from '../components/EditCanvasArea.vue';
-import Drop from '../components/Drop.vue';
+import Drop1 from '../components/Drop1.vue';
 // import Netwrok from '../components/Network.vue'
 
 const routes = [
-  { path: '/', component:  EditCanvasArea  },
+  { path: '/', component:  Drop1  },
   { path: '/five', component:Drop, },
 ]
 
