@@ -22,6 +22,28 @@ const layouts: Layouts = {
 const configs = defineConfigs({
   node: {
     selectable: 2, // up to 2 nodes
+    normal: {
+      type: "rect",
+      radius: 16,
+      // for type is "rect" -->
+      width: 62,
+      height: 32,
+      borderRadius: 4,
+      // <-- for type is "rect"
+      strokeWidth: 0,
+      strokeColor: "#000000",
+      strokeDasharray: "0",
+      color: "#4466cc",
+    },
+    label: {
+      visible: true,
+      fontFamily: undefined,
+      fontSize: 13,
+      lineHeight: 1.1,
+      color: "#ffffff",
+      margin: 4,
+      direction: "south",
+    }
   },
   edge: {
     selectable: true,
@@ -29,7 +51,6 @@ const configs = defineConfigs({
       width: 3,
     },
   },
-  
 })
 
 export default {

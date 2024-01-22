@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="mynetwork" ref="container"  
-        @drop.prevent="onDrop($event, idx)"
+        @drop.prevent="onDrop($event, item)"
          @dragenter.prevent
          @dragover.prevent></div>
     <!-- <v-btn @click="addNode">Add Node</v-btn> -->
@@ -217,7 +217,7 @@ const importData = () => {
 //   network = new Network(container.value, data, options);
 
 // }
-const handleFileChange = (event) => {
+const handleFileChange = (event:any) => {
   const file = event.target.files[0];
 
   if (file) {
@@ -242,8 +242,8 @@ const handleFileChange = (event) => {
 }
 
 
-const onDrop = (event:any, idx:number) => {
-  console.log(event, idx, "ondrop") 
+const onDrop = (event:any, item:string) => {
+  console.log(event, item, "ondrop") 
   //좌표변환
   // const x = event.clientX;
   // const y = event.clientY;
