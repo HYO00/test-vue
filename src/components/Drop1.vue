@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue"
-import { Nodes, Edges, Layouts } from "v-network-graph"
+import { Nodes, Edges, Layouts, LayerPositions } from "v-network-graph"
 import data from "./data"
 import * as vNG from "v-network-graph"
+import { RefSymbol } from "@vue/reactivity";
 
 const nodes: Nodes = reactive({ ...data.nodes })
 const edges: Edges = reactive({ ...data.edges })
@@ -45,6 +46,28 @@ function exportData () {
   // const text =  graph.value.exportAsSvgText({ embedImages: true })
 }
 
+const onDrop = (event:any, idx:number) => {
+  console.log(event, idx, "here onDrop1", layouts, LayerPositions)
+  const selectedItem = event.dataTransfer.getData("selectedItem");
+  const nodeId = `node${nextNodeIndex.value}`;
+  const name = selectedItem;
+  
+  // Get the coordinates of the drop position
+  const x = event.clientX;
+  const y = event.clientY;
+  //   const canvasRect = document.getElementById('mynetwork').getBoundingClientRect();
+  // const canvasX = x - canvasRect.left;
+  // const canvasY = y - canvasRect.top;
+  // const canvasCoord = { x: canvasX, y: canvasY };
+  // const networkCoord = graph.DOMtoCanvas(canvasCoord);
+
+  // Add the new node to the graph at the drop position
+  nodes[nodeId] = { name, x, y };
+  nextNodeIndex.value++;
+}
+
+
+
 </script>
 
 <template>
@@ -72,6 +95,7 @@ function exportData () {
   </div>
 
   <v-network-graph
+    id="mynetwork"
     ref="graph"
     v-model:selected-nodes="selectedNodes"
     v-model:selected-edges="selectedEdges"
@@ -79,5 +103,8 @@ function exportData () {
     :edges="edges"
     :layouts="layouts"
     :configs="data.configs"
+    @drop.prevent="onDrop($event, idx)"
+    @dragenter.prevent
+    @dragover.prevent
   />
 </template>
