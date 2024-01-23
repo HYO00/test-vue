@@ -8,11 +8,12 @@
         >
       </v-textarea>
         <v-textarea
+        v-model="inputData"
         bg-color="grey-lighten-2"
         color="cyan"
         label="Input"
         ></v-textarea>
-        <v-btn bg-color="light-blue">add data</v-btn>
+        <v-btn bg-color="light-blue" @click="addNodeData">add data</v-btn>
        
         <v-textarea
         bg-color="amber-lighten-4"
@@ -29,12 +30,15 @@ import { useDataStore } from '../stores/nodeData';
 const dataStore = useDataStore();
 const { nodeDataInfo : textData} = toRefs(dataStore);
 
+const inputData = ref('');
+
 // Create a reactive reference for textData
 // const textData = ref(nodeDataInfo.value);
 
 const computedData = computed(() =>{
   return JSON.stringify(textData.value||{})
 })
+
 // Subscribe to changes in the store and update textData
 // dataStore.$subscribe((mutation, state) => {
 //   textData.value = 
@@ -44,6 +48,13 @@ const computedData = computed(() =>{
 // onMounted(() => {
 //   textData.value = textData.value;
 // });
+
+
+const addNodeData = () => {
+  const inputValue = inputData.value;
+  console.log('Input Value:', inputValue, textData.value);
+  textData.value.info = inputValue;
+};
 
 
 

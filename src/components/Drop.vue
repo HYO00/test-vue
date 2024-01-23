@@ -171,9 +171,14 @@ const handleFileChange = (event) => {
           nodes: getNodeData(importedData),
           edges: getEdgeData(importedData),
         };
-        // nodes.add(getNodeData(importedData));
+        
+        debugger;
         network = new Network(container.value, data, options);
-    
+  
+        network.on('click', (event) => {
+          console.log(event.nodes[0])
+          debugger;
+        })
       } catch (error) {
         console.error('Error parsing JSON file:', error);
       }

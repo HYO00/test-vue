@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue"
+import { onMounted, reactive, ref } from "vue"
 import { Nodes, Edges } from "v-network-graph"
 import * as vNG from "v-network-graph"
 import data from "./data"
+import { useDataStore } from '../stores/nodeData';
+import { useNewaStore } from '../stores/newNode';
+
+const dataStore = useDataStore();
+const newStore = useNewaStore();
 
 let nodes: Nodes = reactive({ ...data.nodes })
 let edges: Edges = reactive({ ...data.edges })
@@ -62,6 +67,7 @@ const  exportData = async() => {
     if (!graph.value) return;
     const text = await graph.value.exportAsSvgText()
     console.log(text, "exportData", layouts.value , nodes, edges)
+    nodes[node].info
     const exportInfo =  {
       nodes: nodes,
       edges: edges,
@@ -153,6 +159,18 @@ const handleFileChange = (event:any) => {
   }
 }
 
+const eventHandlers: vNG.EventHandlers = {
+  "node:click": ({node}) => {
+    console.log(nodes , node, nodes[node])
+    //nodes[node].info ="새로운정보"
+    dataStore.setNodeDataInfo( nodes[node]);
+  },
+}
+
+// onMounted(()=>{
+//   newStore.newNodeData = {}
+// })
+
 </script>
 
 <template>
@@ -190,6 +208,7 @@ const handleFileChange = (event:any) => {
     :edges="edges"
     :layouts="layouts"
     :configs="data.configs"
+    :event-handlers="eventHandlers"
     @drop.prevent="onDrop($event)"
     @dragenter.prevent
     @dragover.prevent
