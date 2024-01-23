@@ -9,7 +9,7 @@ import { useNewaStore } from '../stores/newNode';
 const dataStore = useDataStore();
 const newStore = useNewaStore();
 
-let nodes: Nodes = reactive({ ...data.nodes })
+let nodes: Nodes = newStore.newNodeData//reactive({  })
 let edges: Edges = reactive({ ...data.edges })
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextEdgeIndex = ref(Object.keys(edges).length + 1)
@@ -67,7 +67,7 @@ const  exportData = async() => {
     if (!graph.value) return;
     const text = await graph.value.exportAsSvgText()
     console.log(text, "exportData", layouts.value , nodes, edges)
-    nodes[node].info
+    //nodes[node].info
     const exportInfo =  {
       nodes: nodes,
       edges: edges,
@@ -120,6 +120,7 @@ const importData = () => {
 }
 
 const handleFileChange = (event:any) => {
+
   const file = event.target.files[0];
 
   if (file) {
@@ -133,8 +134,8 @@ const handleFileChange = (event:any) => {
 
         // Populate nodes
         for (const nodeId in importedData.nodes) {
-            const { name } = importedData.nodes[nodeId];
-            nodes[nodeId] = { name };
+            const { name, info } = importedData.nodes[nodeId];
+            nodes[nodeId] = { name, info};
             nextNodeIndex.value++;
         }
 
@@ -161,7 +162,7 @@ const handleFileChange = (event:any) => {
 
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({node}) => {
-    console.log(nodes , node, nodes[node])
+    console.log("1",nodes ,"2", node, "3",nodes[node])
     //nodes[node].info ="새로운정보"
     dataStore.setNodeDataInfo( nodes[node]);
   },
@@ -174,7 +175,8 @@ const eventHandlers: vNG.EventHandlers = {
 </script>
 
 <template>
-  <div class="demo-control-panel">
+  <div class="graph-container">
+    <div class="demo-control-panel">
     <div class="btnBox">
       <label>Node:</label>
       <v-btn @click="addNode">add</v-btn>
@@ -201,6 +203,7 @@ const eventHandlers: vNG.EventHandlers = {
   </div>
 
   <v-network-graph
+    class="graphBox"
     ref="graph"
     v-model:selected-nodes="selectedNodes"
     v-model:selected-edges="selectedEdges"
@@ -213,9 +216,25 @@ const eventHandlers: vNG.EventHandlers = {
     @dragenter.prevent
     @dragover.prevent
   />
+  </div>
+
 </template>
 
 <style>
+.graph-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.demo-control-panel {
+  display: flex;
+}
+.graphBox{
+  border: 1px solid rgb(140, 155, 237);
+  border-radius: 5px;
+  margin-top: 10px;
+}
 .btnBox{
     display: flex;
     margin: 10px;
