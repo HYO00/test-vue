@@ -7,20 +7,16 @@
             <router-link to="/five">About</router-link>
         </div>
       </v-app-bar>
-  
-      <v-navigation-drawer
-        color="grey-darken-2"
-        permanent
-        name="drawer"
-        location="end"
-      >
-        <div class="d-flex justify-center align-center h-100">
-            <Drag />
-        </div>
+      <v-navigation-drawer>
+        <Drag />
+    </v-navigation-drawer>
+
+      <v-navigation-drawer location="right">
+        <DataInfo />
       </v-navigation-drawer>
   
-      <v-main class="d-flex align-center justify-center" style="min-height: 600px; min-width: 900px;">
-        <slot name="main"></slot>
+      <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
+        <slot name="main" ></slot>
       </v-main>
   
       <v-footer
@@ -38,20 +34,19 @@
     </v-layout>
   </template>
   
-  <script lang="ts">
-import Drag from './Drag.vue';
+  <script setup lang="ts">
+  import Drag from './Drag.vue';
+  import DataInfo from './DataInfo.vue';
+
+
+  
+  const print = (key: string) => {
+    //alert(JSON.stringify(app.getLayoutItem(key), null, 2));
+  };
 
 
 
-  export default {
-    name: 'App',
-    methods: {
-        print(_key: string) {
-            //alert(JSON.stringify(this.$refs.app.getLayoutItem(key), null, 2))
-        },
-    },
-    components: { Drag }
-}
+
   </script>
   
   <style>
