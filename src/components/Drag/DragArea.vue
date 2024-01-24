@@ -1,5 +1,17 @@
 <script setup lang="ts">
-// import draggable from 'vuedraggable';
+import { useQuery } from '@tanstack/vue-query'
+import axios from 'axios';
+
+const { isPending, isError, data, error } = useQuery({
+  queryKey: ['test'],
+  queryFn:  async () => {
+    const response = await axios.get(`/api/test/`);
+    return response;
+  }
+})
+
+console.log(isPending, isError, data, error)
+// console.log(data, isLoading, "testapi")
 
 const itemArr = ["Mapping", "Custom Query", "Select Query", "Insert Query", "Update Query", "Delete Query", "Text", "Json"];
 
@@ -26,12 +38,12 @@ const startDrag = (event: any, item: string) => {
 
 
 <style>
-    .rounded-box {
-  border: 1px solid #ccc;
-  border-radius: 10px; /* 둥근 모서리 스타일 적용 */
-  padding: 10px;
-  margin: 5px;
-  cursor: grab; /* 드래그 커서 설정 */
-  list-style: none;
+  .rounded-box {
+    border: 1px solid #ccc;
+    border-radius: 10px; /* 둥근 모서리 스타일 적용 */
+    padding: 10px;
+    margin: 5px;
+    cursor: grab; /* 드래그 커서 설정 */
+    list-style: none;
 }
 </style>
