@@ -1,29 +1,13 @@
 <script setup lang="ts">
-import Vuetify from './components/Vuetify.vue';
-//import HelloWorld from './components/HelloWorld.vue'
+import MainLayout from './Layouts/MainLayout.vue'
 </script>
 
 <template>
-  <!-- <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/five">About</router-link>
-  </div> -->
-
-  <Vuetify>
+  <MainLayout>
     <template #main>
         <router-view />
-      <!-- <HelloWorld msg="안녕하세요" /> -->
     </template>
-  </Vuetify>
-  <!-- <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div> -->
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
+  </MainLayout>
 </template>
 
 <style scoped>

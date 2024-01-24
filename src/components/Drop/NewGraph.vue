@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue"
+import { reactive, ref } from "vue"
 import { Nodes, Edges } from "v-network-graph"
 import * as vNG from "v-network-graph"
-import data from "./data"
-import { useDataStore } from '../stores/nodeData';
-import { useNewaStore } from '../stores/newNode';
+import data from "../../static/data"
+import { useDataStore } from '../../stores/nodeData';
+import { useNewaStore } from '../../stores/newNode';
 
 const dataStore = useDataStore();
 const newStore = useNewaStore();
 
-let nodes: Nodes = newStore.newNodeData//reactive({  })
+let nodes: Nodes = newStore.newNodeData;
 let edges: Edges = reactive({ ...data.edges })
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextEdgeIndex = ref(Object.keys(edges).length + 1)
@@ -65,18 +65,15 @@ const onDrop = (event:any) => {
 const  exportData = async() => {
 
     if (!graph.value) return;
-    const text = await graph.value.exportAsSvgText()
-    console.log(text, "exportData", layouts.value , nodes, edges)
-    //nodes[node].info
+    //const text = await graph.value.exportAsSvgText()
     const exportInfo =  {
       nodes: nodes,
       edges: edges,
       layouts :layouts.value
     };
-    console.log("--------", exportInfo)
+
     let exportValue = JSON.stringify(exportInfo, undefined, 2);
-    console.log("exportValue", exportValue)
-    // exportArea.value = exportValue;
+
     const blob = new Blob([exportValue], { type: "application/json" });
 
     // Create a link element
@@ -98,22 +95,6 @@ const  exportData = async() => {
     URL.revokeObjectURL(url);
 }
 
-// const importData = () => {
-//     const importedData = {
-//     nodes: { node1: { name: 'N1' }, node2: { name: 'N2' } },
-//     edges: { edge1: { source: 'node1', target: 'node2' } },
-//     layouts: {
-//       nodes: {
-//         node1: { x: 50, y: 0 },
-//         node2: { x: 0, y: 75 }
-//       }
-//     }
-//   };
-
-    // nodes = reactive({});
-    // edges = reactive({});
-   
-// }
 
 const importData = () => {
   fileInput.value.click();
@@ -162,15 +143,9 @@ const handleFileChange = (event:any) => {
 
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({node}) => {
-    console.log("1",nodes ,"2", node, "3",nodes[node])
-    //nodes[node].info ="새로운정보"
     dataStore.setNodeDataInfo( nodes[node]);
   },
 }
-
-// onMounted(()=>{
-//   newStore.newNodeData = {}
-// })
 
 </script>
 

@@ -29,7 +29,7 @@ import { ref, onMounted, reactive, computed  } from 'vue';
 import { Network } from 'vis-network';
 import type { Data, Node, Edge, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
- import { useDataStore } from '../stores/nodeData';
+ import { useDataStore } from '../../stores/nodeData';
 
 const dataStore = useDataStore();
 const fileInput = ref(null);

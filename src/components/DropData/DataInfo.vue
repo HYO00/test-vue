@@ -13,7 +13,7 @@
         color="cyan"
         label="Input"
         ></v-textarea>
-        <v-btn bg-color="light-blue" @click="addNodeData">add data</v-btn>
+        <v-btn variant="outlined" style="margin-bottom: 15px;" @click="addNodeData">add data</v-btn>
        
         <v-textarea
         bg-color="amber-lighten-4"
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { toRefs, ref, onMounted, computed } from 'vue';
-import { useDataStore } from '../stores/nodeData';
+import { useDataStore } from '../../stores/nodeData';
 
 const dataStore = useDataStore();
 const { nodeDataInfo : textData} = toRefs(dataStore);
