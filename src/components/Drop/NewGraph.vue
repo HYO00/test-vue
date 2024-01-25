@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, toRefs } from "vue"
+
 import * as vNG from "v-network-graph"
+import { Tabulator } from 'tabulator-tables';
+
+import { TableData } from '../../types/tableDataTypes';
+
+import tableDataJson from "../../static/tableData.json";
 import data from "../../static/data"
+
 import { useDataStore } from '../../stores/nodeData';
 import { useNetworkStore } from '../../stores/network';
-import tableDataJson from "../../static/tableData.json";
-import { Tabulator } from 'tabulator-tables';
-import { TableData } from '../../types/tableDataTypes';
+import { useTableStore } from "../../stores/table";
 
 import { makeDraggable } from '../../utils/dragUtil';
 
 const dataStore = useDataStore();
 const networkStore = useNetworkStore();
+const tableStore = useTableStore();
 
 const { nodes, edges, layouts } = networkStore;
+const { sourceData, targetData } = toRefs(tableStore);
 
 const graph = ref<vNG.VNetworkGraphInstance | null>(null);
 const fileInput = ref<HTMLElement | null>(null);
@@ -103,6 +110,9 @@ const onTransFormMenuClick = () => {
       const { source, target } = edges[edge];
       const sourceTableName = nodes[source].name as string;
       const targetTableName = nodes[target].name as string;
+
+      sourceData.value = JSON.stringify(tableData[sourceTableName].data);
+      targetData.value = JSON.stringify(tableData[targetTableName].data);
 
       new Tabulator(`#source-table`, {
         data: tableData[sourceTableName].data,
