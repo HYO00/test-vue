@@ -17,6 +17,6 @@ const { isPending, isError, data, error } = useQuery({
   }
 })
 
-console.log(isPending, isError, data, error)
+console.log(isPending, isError, data.value, error)
 
 

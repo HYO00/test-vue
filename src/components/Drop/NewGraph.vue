@@ -5,9 +5,18 @@ import * as vNG from "v-network-graph"
 import data from "../../static/data"
 import { useDataStore } from '../../stores/nodeData';
 import { useNewaStore } from '../../stores/newNode';
+import { useCommonStore } from '../../stores/nodeModal';
+import Example from "../../components/Modal/Example.vue"
 
+
+
+
+const modalStore = useCommonStore();
 const dataStore = useDataStore();
 const newStore = useNewaStore();
+
+let dialog = modalStore.nodeModal;
+console.log("di", dialog)
 
 let nodes: Nodes = newStore.newNodeData;
 let edges: Edges = reactive({ ...data.edges })
@@ -49,16 +58,18 @@ function removeEdge() {
 }
 
 const onDrop = (event:any) => {
-    console.log(event, "in new drop", graph)
+    // console.log(event, "in new drop", graph)
     if (!graph.value) return;
     const point = { x: event.offsetX, y: event.offsetY }
     // translate coordinates: DOM -> SVG
     const svgPoint = graph.value.translateFromDomToSvgCoordinates(point);
     const selectedItem = event.dataTransfer.getData("selectedItem");
-    const nodeId = `node${nextNodeIndex.value}`
-    const name = `${selectedItem}`
+    const dropItem =  JSON.parse(selectedItem)
+    const nodeId = dropItem.id
+    const name = `${dropItem.name}`
+    const info = dropItem.info
     layouts.value.nodes[nodeId] = svgPoint
-    nodes[nodeId] = { name };
+    nodes[nodeId] = { name, nodeId, info};
     nextNodeIndex.value++
 }
 
@@ -145,6 +156,11 @@ const eventHandlers: vNG.EventHandlers = {
   "node:click": ({node}) => {
     dataStore.setNodeDataInfo( nodes[node]);
   },
+  "node:dblclick": ({node}) => {
+     console.log(nodes[node].nodeId, "db click", dialog.isModal )
+    
+    modalStore.setNodeModal(!dialog.isModal)
+  }
 }
 
 </script>
@@ -192,6 +208,7 @@ const eventHandlers: vNG.EventHandlers = {
     @dragover.prevent
   />
   </div>
+  <Example :dialog="dialog"/>
 
 </template>
 

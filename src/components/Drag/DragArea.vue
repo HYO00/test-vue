@@ -6,33 +6,34 @@ const { isPending, isError, data, error } = useQuery({
   queryKey: ['test'],
   queryFn:  async () => {
     const response = await axios.get(`/api/test/`);
-    return response;
+    console.log(response, "here list" )
+    return response.data;
   }
 })
 
-console.log(isPending, isError, data, error)
-// console.log(data, isLoading, "testapi")
+console.log(isPending, isError,data,  data.value, data.value?.data, error,  "in useQuery")
 
-const itemArr = ["Mapping", "Custom Query", "Select Query", "Insert Query", "Update Query", "Delete Query", "Text", "Json"];
+//const itemArr =  data.value?.data;//["Mapping", "Custom Query", "Select Query", "Insert Query", "Update Query", "Delete Query", "Text", "Json"];
 
 const startDrag = (event: any, item: string) => {
-    console.log("start", event, item)
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("selectedItem", item);
+  event.dataTransfer.setData("selectedItem", JSON.stringify(item));
 };
 </script>
 
 <template>
   <div>
-
-      <li v-for="(item, idx) in itemArr" :key="idx" class="rounded-box"
+    <span v-if="isPending">Loading...</span>
+    <span v-else-if="isError">Error: {{ error?.message }}</span>
+    <ul v-else>
+      <li  v-for="(item) in data" :key="item.id" class="rounded-box"
           @dragstart="startDrag($event, item)"
           draggable="true"
       >
-        {{ item }}
+        {{ item.name }}
       </li>
-
+    </ul>
   </div>
 </template>
 
