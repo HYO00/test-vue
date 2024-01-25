@@ -10,9 +10,6 @@ import { TableData } from '../../types/tableDataTypes';
 import { useCommonStore } from '../../stores/nodeModal';
 import Example from "../../components/Modal/Example.vue"
 
-
-
-
 const modalStore = useCommonStore();
 const dataStore = useDataStore();
 const networkStore = useNetworkStore();
@@ -50,11 +47,7 @@ const showNodeContextMenu = (params: vNG.NodeEvent<MouseEvent>) => {
   }
 };
 
-const eventHandlers: vNG.EventHandlers = {
-  "node:click": ({node}) => {
-    dataStore.setNodeDataInfo(nodes[node]);
-  },
-};
+
 
 const onNodeMenuClick = () => {
   for (const node in nodes) {
@@ -110,11 +103,15 @@ const eventHandlers: vNG.EventHandlers = {
     dataStore.setNodeDataInfo( nodes[node]);
   },
   "node:dblclick": ({node}) => {
-     console.log(nodes[node].nodeId, "db click", dialog.isModal )
-    
-    modalStore.setNodeModal(!dialog.isModal)
+     console.log(nodes[node], "db click", modalStore.nodeModal.isModal )
+    const clikedItem = {
+      id: nodes[node].nodeId,
+      name: nodes[node].name,
+      flag: !modalStore.nodeModal.isModal
+    }
+    modalStore.setNodeModal(clikedItem)
   },
-    "node:contextmenu": showNodeContextMenu,
+  "node:contextmenu": showNodeContextMenu,
 }
 
 </script>
@@ -140,7 +137,7 @@ const eventHandlers: vNG.EventHandlers = {
       </div>
       <div>
           <v-btn block rounded="sm" size="small"  @click="networkStore.exportData(graph)">export</v-btn>
-          <v-btn block rounded="sm" size="small"  @click="networkStore.importData(fileInput)">
+          <v-btn block rounded="sm" size="small"  @click="networkStore.importData(fileInput as HTMLElement)">
               importData
               <input ref="fileInput" type="file" style="display: none" @change="networkStore.handleFileChange($event)" />
           </v-btn>
@@ -165,24 +162,9 @@ const eventHandlers: vNG.EventHandlers = {
       <div @click="onNodeMenuClick">{{ menuTargetNode }}</div>
     </div>
     <div ref="draggableContainer"  id="table-container" class="draggable-container" @mousedown="startDrag"></div>
+    <Example :dialog="modalStore.nodeModal.isModal"/>
   </div>
 
-  <v-network-graph
-    class="graphBox"
-    ref="graph"
-    v-model:selected-nodes="selectedNodes"
-    v-model:selected-edges="selectedEdges"
-    :nodes="nodes"
-    :edges="edges"
-    :layouts="layouts"
-    :configs="data.configs"
-    :event-handlers="eventHandlers"
-    @drop.prevent="onDrop($event)"
-    @dragenter.prevent
-    @dragover.prevent
-  />
-  </div>
-  <Example :dialog="dialog"/>
 </template>
 
 <style>

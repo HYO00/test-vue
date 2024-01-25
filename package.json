@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@types/eslint": "^8",
-    "@types/tabulator-tables": "^5.5.6",
     "@types/node": "^20.11.5",
+    "@types/tabulator-tables": "^5.5.6",
     "@vitejs/plugin-vue": "^4.5.2",
     "eslint": "^8.56.0",
     "msw": "^2.1.4",

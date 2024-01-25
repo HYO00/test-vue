@@ -59,14 +59,15 @@ export const useNetworkStore = defineStore('networkStore', () => {
         const point = { x: event.offsetX, y: event.offsetY };
         const svgPoint = graph.translateFromDomToSvgCoordinates(point);
         const selectedItem = event.dataTransfer?.getData("selectedItem");
-        const nodeId = `node${nodeCount.value}`;
-        const name = selectedItem ?? '';
+        const dropItem = selectedItem && JSON.parse(selectedItem);
+        const nodeId = dropItem?.id;
+        const name = dropItem?.name ?? '';
         layouts.value.nodes[nodeId] = svgPoint;
-        nodes.value[nodeId] = { name };
+        nodes.value[nodeId] = { name, nodeId };
     };
 
     const  exportData = (graph: vNG.VNetworkGraphInstance | null) => {
-
+        debugger;
         if (!graph) return;
         //const text = await graph.value.exportAsSvgText()
         const exportInfo =  {
