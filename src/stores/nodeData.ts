@@ -8,12 +8,5 @@ export const useDataStore = defineStore('dataStore', () => {
   }
 
   return { nodeDataInfo, setNodeDataInfo}
-  // state: () => ({
-  //   nodeDataInfo: null,
-  // }),
-  // actions: {
-  //   setNodeDataInfo(nodeInfo) {
-  //     this.nodeDataInfo = nodeInfo;
-  //   },
-  // },
+
 });

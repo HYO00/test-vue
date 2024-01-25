@@ -7,7 +7,13 @@ import { useNetworkStore } from '../../stores/network';
 import tableDataJson from "../../static/tableData.json";
 import { Tabulator } from 'tabulator-tables';
 import { TableData } from '../../types/tableDataTypes';
+import { useCommonStore } from '../../stores/nodeModal';
+import Example from "../../components/Modal/Example.vue"
 
+
+
+
+const modalStore = useCommonStore();
 const dataStore = useDataStore();
 const networkStore = useNetworkStore();
 
@@ -48,7 +54,6 @@ const eventHandlers: vNG.EventHandlers = {
   "node:click": ({node}) => {
     dataStore.setNodeDataInfo(nodes[node]);
   },
-  "node:contextmenu": showNodeContextMenu,
 };
 
 const onNodeMenuClick = () => {
@@ -100,6 +105,17 @@ const startDrag = (event:MouseEvent) => {
 
 
 
+const eventHandlers: vNG.EventHandlers = {
+  "node:click": ({node}) => {
+    dataStore.setNodeDataInfo( nodes[node]);
+  },
+  "node:dblclick": ({node}) => {
+     console.log(nodes[node].nodeId, "db click", dialog.isModal )
+    
+    modalStore.setNodeModal(!dialog.isModal)
+  },
+    "node:contextmenu": showNodeContextMenu,
+}
 
 </script>
 
@@ -150,6 +166,23 @@ const startDrag = (event:MouseEvent) => {
     </div>
     <div ref="draggableContainer"  id="table-container" class="draggable-container" @mousedown="startDrag"></div>
   </div>
+
+  <v-network-graph
+    class="graphBox"
+    ref="graph"
+    v-model:selected-nodes="selectedNodes"
+    v-model:selected-edges="selectedEdges"
+    :nodes="nodes"
+    :edges="edges"
+    :layouts="layouts"
+    :configs="data.configs"
+    :event-handlers="eventHandlers"
+    @drop.prevent="onDrop($event)"
+    @dragenter.prevent
+    @dragover.prevent
+  />
+  </div>
+  <Example :dialog="dialog"/>
 </template>
 
 <style>
