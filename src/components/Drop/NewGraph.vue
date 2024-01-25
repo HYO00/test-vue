@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue"
-import { Nodes, Edges } from "v-network-graph"
+import { ref, Ref } from "vue"
 import * as vNG from "v-network-graph"
 import data from "../../static/data"
 import { useDataStore } from '../../stores/nodeData';
-import { useNewaStore } from '../../stores/newNode';
+import { useNetworkStore } from '../../stores/network';
+import tableDataJson from "../../static/tableData.json";
+import { Tabulator } from 'tabulator-tables';
+import { TableData } from '../../types/tableDataTypes';
 import { useCommonStore } from '../../stores/nodeModal';
 import Example from "../../components/Modal/Example.vue"
 
@@ -13,144 +15,95 @@ import Example from "../../components/Modal/Example.vue"
 
 const modalStore = useCommonStore();
 const dataStore = useDataStore();
-const newStore = useNewaStore();
+const networkStore = useNetworkStore();
 
-let dialog = modalStore.nodeModal;
-console.log("di", dialog)
+const { nodes, edges, layouts } = networkStore;
 
-let nodes: Nodes = newStore.newNodeData;
-let edges: Edges = reactive({ ...data.edges })
-const nextNodeIndex = ref(Object.keys(nodes).length + 1)
-const nextEdgeIndex = ref(Object.keys(edges).length + 1)
+const graph = ref<vNG.VNetworkGraphInstance | null>(null);
+const fileInput = ref<HTMLElement | null>(null);
 
-const selectedNodes = ref<string[]>([])
-const selectedEdges = ref<string[]>([])
+const nodeMenu = ref<HTMLDivElement>();
+const menuTargetNode = ref("");
+const tableData:TableData = tableDataJson;
 
-const graph = ref<vNG.Instance>();
-const layouts = ref({ ...data.layouts })
-const fileInput = ref(null);
-
-function addNode() {
-  const nodeId = `node${nextNodeIndex.value}`
-  const name = `N${nextNodeIndex.value}`
-  nodes[nodeId] = { name }
-  nextNodeIndex.value++
-}
-
-function removeNode() {
-  for (const nodeId of selectedNodes.value) {
-    delete nodes[nodeId]
+const showContextMenu = (element: HTMLElement, event: MouseEvent) => {
+  element.style.left = event.x + "px"
+  element.style.top = event.y + "px"
+  element.style.visibility = "visible"
+  const handler = (event: PointerEvent) => {
+    if (!event.target || !element.contains(event.target as HTMLElement)) {
+      element.style.visibility = "hidden"
+      document.removeEventListener("pointerdown", handler, { capture: true })
+    }
   }
-}
+  document.addEventListener("pointerdown", handler, { passive: true, capture: true })
+};
 
-function addEdge() {
-  if (selectedNodes.value.length !== 2) return
-  const [source, target] = selectedNodes.value
-  const edgeId = `edge${nextEdgeIndex.value}`
-  edges[edgeId] = { source, target }
-  nextEdgeIndex.value++
-}
-
-function removeEdge() {
-  for (const edgeId of selectedEdges.value) {
-    delete edges[edgeId]
+const showNodeContextMenu = (params: vNG.NodeEvent<MouseEvent>) => {
+  const { node, event } = params
+  // Disable browser's default context menu
+  event.stopPropagation()
+  event.preventDefault()
+  if (nodeMenu.value) {
+    menuTargetNode.value = nodes[node].name ?? ""
+    showContextMenu(nodeMenu.value, event)
   }
-}
+};
 
-const onDrop = (event:any) => {
-    // console.log(event, "in new drop", graph)
-    if (!graph.value) return;
-    const point = { x: event.offsetX, y: event.offsetY }
-    // translate coordinates: DOM -> SVG
-    const svgPoint = graph.value.translateFromDomToSvgCoordinates(point);
-    const selectedItem = event.dataTransfer.getData("selectedItem");
-    const dropItem =  JSON.parse(selectedItem)
-    const nodeId = dropItem.id
-    const name = `${dropItem.name}`
-    const info = dropItem.info
-    layouts.value.nodes[nodeId] = svgPoint
-    nodes[nodeId] = { name, nodeId, info};
-    nextNodeIndex.value++
-}
+const eventHandlers: vNG.EventHandlers = {
+  "node:click": ({node}) => {
+    dataStore.setNodeDataInfo(nodes[node]);
+  },
+};
 
-const  exportData = async() => {
+const onNodeMenuClick = () => {
+  for (const node in nodes) {
+    if (nodes[node].name === menuTargetNode.value) {
+      const tableName = nodes[node].name as string;
 
-    if (!graph.value) return;
-    //const text = await graph.value.exportAsSvgText()
-    const exportInfo =  {
-      nodes: nodes,
-      edges: edges,
-      layouts :layouts.value
-    };
+      const newTable = document.createElement('div');
+      newTable.id = tableName;
 
-    let exportValue = JSON.stringify(exportInfo, undefined, 2);
-
-    const blob = new Blob([exportValue], { type: "application/json" });
-
-    // Create a link element
-    const a = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-
-    // Set the download attribute and link URL
-    a.download = "network_data.json";
-    a.href = url;
-
-    // Append the link to the body and trigger the click event
-    document.body.appendChild(a);
-    a.click();
-
-    // Remove the link element from the body
-    document.body.removeChild(a);
-
-    // Release the Blob URL
-    URL.revokeObjectURL(url);
-}
-
-
-const importData = () => {
-  fileInput.value.click();
-}
-
-const handleFileChange = (event:any) => {
-
-  const file = event.target.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      try {
-        const importedData = JSON.parse(e.target.result);
-        nextNodeIndex.value = 1;
-        nextEdgeIndex.value = 1;
-
-        // Populate nodes
-        for (const nodeId in importedData.nodes) {
-            const { name, info } = importedData.nodes[nodeId];
-            nodes[nodeId] = { name, info};
-            nextNodeIndex.value++;
-        }
-
-        // Populate edges
-        for (const edgeId in importedData.edges) {
-            const { source, target } = importedData.edges[edgeId];
-            edges[edgeId] = { source, target };
-            nextEdgeIndex.value++;
-        }
-        for (const nodeId in importedData.layouts.nodes) {
-            const { x, y } = importedData.layouts.nodes[nodeId];
-            layouts.value.nodes[nodeId] = { x, y };
-        }
-
-        
-      } catch (error) {
-        console.error('Error parsing JSON file:', error);
+      const tableContainer = document.getElementById('table-container');
+      if (tableContainer) {
+        tableContainer.appendChild(newTable); // 새 요소 추가
       }
-    };
 
-    reader.readAsText(file);
+      new Tabulator(`#${tableName}`, {
+        data: tableData[tableName].data,
+        columns: tableData[tableName].columns,
+        layout:'fitColumns'
+      });
+      
+    }
   }
-}
+};
+const draggableContainer:Ref<HTMLElement | null> = ref(null);
+
+
+const startDrag = (event:MouseEvent) => {
+  const el = draggableContainer.value;
+  if (!el) return;
+
+  let posX = event.clientX - el.getBoundingClientRect().left;
+  let posY = event.clientY - el.getBoundingClientRect().top;
+
+  const moveElement = (moveEvent: MouseEvent) => {
+    el.style.left = moveEvent.clientX - posX + 'px';
+    el.style.top = moveEvent.clientY - posY + 'px';
+  };
+
+  const stopDrag = () => {
+    document.removeEventListener('mousemove', moveElement);
+    document.removeEventListener('mouseup', stopDrag);
+  };
+
+  document.addEventListener('mousemove', moveElement);
+  document.addEventListener('mouseup', stopDrag);
+};
+
+
+
 
 const eventHandlers: vNG.EventHandlers = {
   "node:click": ({node}) => {
@@ -160,7 +113,8 @@ const eventHandlers: vNG.EventHandlers = {
      console.log(nodes[node].nodeId, "db click", dialog.isModal )
     
     modalStore.setNodeModal(!dialog.isModal)
-  }
+  },
+    "node:contextmenu": showNodeContextMenu,
 }
 
 </script>
@@ -168,29 +122,49 @@ const eventHandlers: vNG.EventHandlers = {
 <template>
   <div class="graph-container">
     <div class="demo-control-panel">
-    <div class="btnBox">
-      <label>Node:</label>
-      <v-btn @click="addNode">add</v-btn>
-      <v-btn :disabled="selectedNodes.length == 0" @click="removeNode"
-        >remove</v-btn
-      >
+      <div class="btnBox">
+        <label>Node:</label>
+        <v-btn @click="networkStore.addNode()">add</v-btn>
+        <v-btn :disabled="networkStore.selectedNodes.length == 0" @click="networkStore.removeNode()"
+          >remove</v-btn
+        >
+      </div>
+      <div class="btnBox">
+        <label>Edge:</label>
+        <v-btn :disabled="networkStore.selectedNodes.length != 2" @click="networkStore.addEdge()"
+          >add</v-btn
+        >
+        <v-btn :disabled="networkStore.selectedEdges.length == 0" @click="networkStore.removeEdge()"
+          >remove</v-btn
+        >
+      </div>
+      <div>
+          <v-btn block rounded="sm" size="small"  @click="networkStore.exportData(graph)">export</v-btn>
+          <v-btn block rounded="sm" size="small"  @click="networkStore.importData(fileInput)">
+              importData
+              <input ref="fileInput" type="file" style="display: none" @change="networkStore.handleFileChange($event)" />
+          </v-btn>
+      </div>
     </div>
-    <div class="btnBox">
-      <label>Edge:</label>
-      <v-btn :disabled="selectedNodes.length != 2" @click="addEdge"
-        >add</v-btn
-      >
-      <v-btn :disabled="selectedEdges.length == 0" @click="removeEdge"
-        >remove</v-btn
-      >
+    <v-network-graph
+      class="graphBox"
+      ref="graph"
+      v-model:selected-nodes="networkStore.selectedNodes"
+      v-model:selected-edges="networkStore.selectedEdges"
+      :nodes="nodes"
+      :edges="edges"
+      :layouts="layouts"
+      :configs="data.configs"
+      :event-handlers="eventHandlers"
+      @drop.prevent="networkStore.onDrop($event, graph)"
+      @dragenter.prevent
+      @dragover.prevent
+    />
+    <div ref="nodeMenu" class="context-menu">
+      Menu for the nodes
+      <div @click="onNodeMenuClick">{{ menuTargetNode }}</div>
     </div>
-    <div>
-        <v-btn block rounded="sm" size="small"  @click="exportData">export</v-btn>
-        <v-btn block rounded="sm" size="small"  @click="importData">
-            importData
-            <input ref="fileInput" type="file" style="display: none" @change="handleFileChange" />
-        </v-btn>
-    </div>
+    <div ref="draggableContainer"  id="table-container" class="draggable-container" @mousedown="startDrag"></div>
   </div>
 
   <v-network-graph
@@ -209,7 +183,6 @@ const eventHandlers: vNG.EventHandlers = {
   />
   </div>
   <Example :dialog="dialog"/>
-
 </template>
 
 <style>
@@ -228,7 +201,31 @@ const eventHandlers: vNG.EventHandlers = {
   margin-top: 10px;
 }
 .btnBox{
-    display: flex;
-    margin: 10px;
+  display: flex;
+  margin: 10px;
+}
+
+.context-menu {
+  width: 180px;
+  background-color: #efefef;
+  padding: 10px;
+  position: fixed;
+  visibility: hidden;
+  font-size: 12px;
+  border: 1px solid #aaa;
+  box-shadow: 2px 2px 2px #aaa;
+  color: #000000;
+
+  > div {
+    border: 1px dashed #000000;
+    padding: 4px;
+    margin-top: 8px;
+    color: #000000;
+  }
+}
+
+.draggable-container {
+  position: absolute;
+  cursor: grab;
 }
 </style>

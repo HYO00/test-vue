@@ -14,12 +14,6 @@
         label="Input"
         ></v-textarea>
         <v-btn variant="outlined" style="margin-bottom: 15px;" @click="addNodeData">add data</v-btn>
-       
-        <v-textarea
-        bg-color="amber-lighten-4"
-        color="orange orange-darken-4"
-        label="Label">
-        </v-textarea>
   </v-container>
 </template>
 

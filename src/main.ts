@@ -11,6 +11,10 @@ import VNetworkGraph from "v-network-graph";
 import 'vuetify/styles'
 import "v-network-graph/lib/style.css"
 import "./style/index.css"
+import { createPinia } from 'pinia'
+// Tabulator CSS
+import 'tabulator-tables/dist/css/tabulator.min.css';
+
 
 
 
