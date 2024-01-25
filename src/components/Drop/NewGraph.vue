@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref } from "vue"
+import { ref } from "vue"
 import * as vNG from "v-network-graph"
 import data from "../../static/data"
 import { useDataStore } from '../../stores/nodeData';
@@ -7,6 +7,8 @@ import { useNetworkStore } from '../../stores/network';
 import tableDataJson from "../../static/tableData.json";
 import { Tabulator } from 'tabulator-tables';
 import { TableData } from '../../types/tableDataTypes';
+
+import { makeDraggable } from '../../utils/dragUtil';
 
 const dataStore = useDataStore();
 const networkStore = useNetworkStore();
@@ -50,57 +52,85 @@ const eventHandlers: vNG.EventHandlers = {
   },
   "node:contextmenu": showNodeContextMenu,
 };
-
 const onNodeMenuClick = () => {
   for (const node in nodes) {
+    
     if (nodes[node].name === menuTargetNode.value) {
       const tableName = nodes[node].name as string;
 
+      // 새로운 테이블 컨테이너 생성
+      const tableContainer = document.createElement('div');
+      tableContainer.classList.add('table-container');
+
+      // 테이블 컨테이너에 ID 할당
+      tableContainer.id = `container-${tableName}`;
+
+      // 닫기 버튼 생성
+      const closeButton = document.createElement('button');
+      closeButton.textContent = 'Close';
+      closeButton.classList.add('close-button')
+      closeButton.onclick = () => tableContainer.remove();
+      makeDraggable(tableContainer);
+
+      // 테이블 컨테이너에 닫기 버튼 추가
+
+      // 새로운 Tabulator 테이블 생성
       const newTable = document.createElement('div');
-      newTable.id = tableName;
+      newTable.id = `table-${tableName}`;
+      tableContainer.appendChild(newTable);
+      tableContainer.appendChild(closeButton);
 
-      const tableContainer = document.getElementById('table-container');
-      if (tableContainer) {
-        tableContainer.appendChild(newTable); // 새 요소 추가
-      }
+      // DOM에 테이블 컨테이너 추가
+      document.body.appendChild(tableContainer);
 
-      new Tabulator(`#${tableName}`, {
+      // Tabulator 인스턴스 생성
+      new Tabulator(`#table-${tableName}`, {
         data: tableData[tableName].data,
-        columns: tableData[tableName].columns,
-        layout:'fitColumns'
+        columns: tableData[tableName].columns
       });
-      
     }
   }
 };
-const draggableContainer:Ref<HTMLElement | null> = ref(null);
 
+const onTransFormMenuClick = () => {
+  if (edges) {
+    for (const edge in edges ) {
+      const transformContainer = document.getElementById('transform-table-container');
+      if (transformContainer) {
+          transformContainer.style.visibility = 'visible' // 컨테이너 내용 비우기
+      }
 
-const startDrag = (event:MouseEvent) => {
-  const el = draggableContainer.value;
-  if (!el) return;
+      const { source, target } = edges[edge];
+      const sourceTableName = nodes[source].name as string;
+      const targetTableName = nodes[target].name as string;
 
-  let posX = event.clientX - el.getBoundingClientRect().left;
-  let posY = event.clientY - el.getBoundingClientRect().top;
+      new Tabulator(`#source-table`, {
+        data: tableData[sourceTableName].data,
+        columns: tableData[sourceTableName].columns,
+      });
 
-  const moveElement = (moveEvent: MouseEvent) => {
-    el.style.left = moveEvent.clientX - posX + 'px';
-    el.style.top = moveEvent.clientY - posY + 'px';
-  };
+      new Tabulator(`#target-table`, {
+        data: tableData[targetTableName].data,
+        columns: tableData[targetTableName].columns
+      });
 
-  const stopDrag = () => {
-    document.removeEventListener('mousemove', moveElement);
-    document.removeEventListener('mouseup', stopDrag);
-  };
+      const closeButton = document.createElement('button');
+      closeButton.textContent = 'Close';
+      closeButton.classList.add('close-button');
+      closeButton.onclick = () => {
+        const transformContainer = document.getElementById('transform-table-container');
+        closeButton.remove();
+        if (transformContainer) {
+          transformContainer.style.visibility = 'hidden' // 컨테이너 내용 비우기
+        }
+      };
 
-  document.addEventListener('mousemove', moveElement);
-  document.addEventListener('mouseup', stopDrag);
-};
-
-
-
-
-
+      if (transformContainer) {
+        transformContainer.appendChild(closeButton);
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -147,8 +177,13 @@ const startDrag = (event:MouseEvent) => {
     <div ref="nodeMenu" class="context-menu">
       Menu for the nodes
       <div @click="onNodeMenuClick">{{ menuTargetNode }}</div>
+      <div @click="onTransFormMenuClick">Transform</div>
     </div>
-    <div ref="draggableContainer"  id="table-container" class="draggable-container" @mousedown="startDrag"></div>
+    <div ref="draggableContainer"  id="table-container" class="draggable-container"></div>
+    <div id="transform-table-container">
+      <div id="source-table"></div>
+      <div id="target-table"></div>
+    </div>
   </div>
 </template>
 
@@ -194,5 +229,36 @@ const startDrag = (event:MouseEvent) => {
 .draggable-container {
   position: absolute;
   cursor: grab;
+}
+
+.draggable-container button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* 버튼 스타일 */
+}
+
+.table-container {
+  position: absolute; /* 절대 위치 */
+  border: 1px solid #ddd; /* 테두리 스타일 */
+  background-color: white; /* 배경색 */
+  cursor: move; /* 커서 스타일 */
+}
+
+.close-button {
+  border: none;
+  background-color: #f44336;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+
+
+#transform-table-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 </style>

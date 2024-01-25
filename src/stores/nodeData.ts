@@ -7,7 +7,7 @@ export const useDataStore = defineStore('dataStore', () => {
     nodeDataInfo.value = nodeInfo
   }
 
-  return { nodeDataInfo, setNodeDataInfo}
+  return { nodeDataInfo, setNodeDataInfo }
   // state: () => ({
   //   nodeDataInfo: null,
   // }),

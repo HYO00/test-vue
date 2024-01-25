@@ -1,19 +1,34 @@
 <template>
-    <v-container>
-        <v-textarea
-        bg-color="light-blue"
-        color="black"
-        label="Data Info"
-        :model-value="computedData"
-        >
-      </v-textarea>
-        <v-textarea
-        v-model="inputData"
-        bg-color="grey-lighten-2"
-        color="cyan"
-        label="Input"
-        ></v-textarea>
-        <v-btn variant="outlined" style="margin-bottom: 15px;" @click="addNodeData">add data</v-btn>
+  <v-container>
+    <v-textarea
+      bg-color="light-blue"
+      color="black"
+      label="Data Info"
+      :model-value="computedData"
+    >
+    </v-textarea>
+    <v-textarea
+      v-model="inputData"
+      bg-color="grey-lighten-2"
+      color="cyan"
+      label="Input"
+    >
+    </v-textarea>
+    <v-btn variant="outlined" style="margin-bottom: 15px;" @click="addNodeData">add data</v-btn>
+    <v-textarea
+      v-model="inputData"
+      bg-color="grey-lighten-2"
+      color="cyan"
+      label="Source"
+    >
+    </v-textarea>
+    <v-textarea
+      v-model="inputData"
+      bg-color="grey-lighten-2"
+      color="cyan"
+      label="Target"
+    >
+    </v-textarea>
   </v-container>
 </template>
 

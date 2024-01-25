@@ -43,8 +43,10 @@ export const useNetworkStore = defineStore('networkStore', () => {
         if (selectedNodes.value.length !== 2) {
             return;
         }
+
         const [source, target] = selectedNodes.value;
-        const edgeId = `edge${edgeCount.value}`;
+
+        const edgeId = `${source}`;
         edges.value[edgeId] = { source, target };
     };
 
