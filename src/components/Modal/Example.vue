@@ -1,12 +1,5 @@
 <template>
   <div class="text-center">
-    <!-- <v-btn
-      color="primary"
-      @click="dialog = true"
-    >
-      Open Dialog
-    </v-btn> -->
-
     <v-dialog
       v-model="dialog"
       width="auto"
@@ -80,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, ref } from 'vue';
+import { toRefs, ref, computed } from 'vue';
 import { useCommonStore } from "../../stores/nodeModal"
 
 const modalStore = useCommonStore();
@@ -91,25 +84,21 @@ import { useDataStore } from '../../stores/nodeData';
 const dataStore = useDataStore();
 const { nodeDataInfo : textData} = toRefs(dataStore);
 
+const computedData = computed(() =>{
+  console.log(textData.value)
+  return JSON.stringify(textData.value||{})
+})
 
+// console.log(computedData)
 
+console.log(textData.value, "textData", computedData)
 let dialog = isModal;
 
-console.log("expapmlelelelele",  isModal, name, id)
-let query = ref("");
-let description = ref("");
-let select = ref("");
-let interests = ref<string[]>([]);
-let info: any
-// const saveModal = () => {
-//    info = {
-//     query: query.value,
-//     description: description.value,
-//     select: select.value,
-//     interests: interests.value
-//   }
-//   modalStore.setNodeItemInfo(info)
-// }
+let query = ref("") || textData.value.info.query;
+let description = ref("") || textData.value.info.description;
+let select = ref("") || textData.value.info.select;
+let interests = ref<string[]>([])  || textData.value.info.interests;
+//let info: any
 
 const closeModal = () => {
   modalStore.setNodeModal({
@@ -117,10 +106,14 @@ const closeModal = () => {
     id: null,
     name: null
   })
+  query = ref("");
+  description = ref("");
+  select = ref("");
+  interests = ref<string[]>([]);
 };
 
 const saveModal = () => {
-  info = {
+  let info = {
     query: query.value,
     description: description.value,
     select: select.value,
@@ -128,6 +121,7 @@ const saveModal = () => {
   }
 
   textData.value.info = info;
+  closeModal()
 };
 
 </script>

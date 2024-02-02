@@ -26,6 +26,7 @@ const startDrag = (event: any, item: string) => {
   <div>
     <span v-if="isPending">Loading...</span>
     <span v-else-if="isError">Error: {{ error?.message }}</span>
+    <span v-else-if="!data.length">No data</span>
     <ul v-else>
       <li  v-for="(item) in data" :key="item.id" class="rounded-box"
           @dragstart="startDrag($event, item)"

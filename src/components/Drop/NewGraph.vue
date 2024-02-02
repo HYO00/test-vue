@@ -9,6 +9,7 @@ import { Tabulator } from 'tabulator-tables';
 import { TableData } from '../../types/tableDataTypes';
 import { useCommonStore } from '../../stores/nodeModal';
 import Example from "../../components/Modal/Example.vue"
+import { useLinkMode } from "./linkMode";
 
 const modalStore = useCommonStore();
 const dataStore = useDataStore();
@@ -22,6 +23,40 @@ const fileInput = ref<HTMLElement | null>(null);
 const nodeMenu = ref<HTMLDivElement>();
 const menuTargetNode = ref("");
 const tableData:TableData = tableDataJson;
+
+// link
+const customLayers = {
+  linking: "edges", // The "linking" layer is above the "edges" layer
+};
+
+const isLinkMode = ref(true);
+
+const { nodeHandlers, linkModeState, temporaryLinkLinePos } = useLinkMode(
+  graph,
+  isLinkMode,
+  edges,
+  layouts,
+  generateEdgeIdFuncFactory(edges)
+);
+
+function toggleLinkMode() {
+  isLinkMode.value = !isLinkMode.value;
+}
+
+function generateEdgeIdFuncFactory(edges: vNG.Edges) {
+  return (source: string, target: string) => {
+    const base = `${source}=>${target}`;
+    let index = 0;
+    let edgeId = `${base}.${index}`;
+    while (edgeId in edges) {
+      index++;
+      edgeId = `${base}.${index}`;
+    }
+    return edgeId;
+  };
+}
+
+//table
 
 const showContextMenu = (element: HTMLElement, event: MouseEvent) => {
   element.style.left = event.x + "px"
@@ -103,13 +138,21 @@ const eventHandlers: vNG.EventHandlers = {
     dataStore.setNodeDataInfo( nodes[node]);
   },
   "node:dblclick": ({node}) => {
+    dataStore.setNodeDataInfo( nodes[node]);
      console.log(nodes[node], "db click", modalStore.nodeModal.isModal )
     const clikedItem = {
       id: nodes[node].nodeId,
       name: nodes[node].name,
       flag: !modalStore.nodeModal.isModal
     }
-    modalStore.setNodeModal(clikedItem)
+    const info = {
+      query: "",
+      description: "",
+      select: "",
+      interests: [] as string[],
+    }
+    modalStore.setNodeModal(clikedItem);
+    modalStore.setNodeItemInfo(info)
   },
   "node:contextmenu": showNodeContextMenu,
 }
@@ -142,6 +185,11 @@ const eventHandlers: vNG.EventHandlers = {
               <input ref="fileInput" type="file" style="display: none" @change="networkStore.handleFileChange($event)" />
           </v-btn>
       </div>
+      <div>
+        <v-btn block rounded="sm" size="small"  class="controlBtn" @click="toggleLinkMode">
+          Turn {{ isLinkMode ? "OFF" : "ON" }}
+        </v-btn>
+      </div>
     </div>
     <v-network-graph
       class="graphBox"
@@ -152,11 +200,31 @@ const eventHandlers: vNG.EventHandlers = {
       :edges="edges"
       :layouts="layouts"
       :configs="data.configs"
+      :layers="customLayers"
       :event-handlers="eventHandlers"
+      :class="{ linkMode: isLinkMode, linking: linkModeState.linking }"
       @drop.prevent="networkStore.onDrop($event, graph)"
       @dragenter.prevent
       @dragover.prevent
-    />
+    >
+      <template #linking="{ scale }">
+        <!-- Link line in linking -->
+        <line
+          v-if="temporaryLinkLinePos"
+          v-bind="temporaryLinkLinePos"
+          :stroke="
+            linkModeState.linking && linkModeState.to ? '#4466cc' : 'hotpink'
+          "
+          :stroke-width="4 * scale"
+        />
+      </template>
+
+      <template #override-node="slotProps">
+        <!-- v-shape: Internal component that draws a node shape -->
+        <v-shape v-bind="{ ...slotProps, ...nodeHandlers(slotProps.nodeId) }" />
+      </template>
+    </v-network-graph>
+
     <div ref="nodeMenu" class="context-menu">
       Menu for the nodes
       <div @click="onNodeMenuClick">{{ menuTargetNode }}</div>
@@ -209,5 +277,14 @@ const eventHandlers: vNG.EventHandlers = {
 .draggable-container {
   position: absolute;
   cursor: grab;
+}
+
+.linkMode::v-deep(.v-ng-node *),
+.linkMode.linking {
+  cursor: crosshair !important;
+}
+
+.controlBtn {
+  background-color: brown;
 }
 </style>

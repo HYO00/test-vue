@@ -596,6 +596,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-devtools@npm:5.17.21":
+  version: 5.17.21
+  resolution: "@tanstack/query-devtools@npm:5.17.21"
+  checksum: bf3db47e4b825adf77b6c31b218feee469bdb8e7493898f6eddc84e11dc60d90a11a78f406ac6f8ce90661af668051937c8a47ff69faa60272d78c1afef24903
+  languageName: node
+  linkType: hard
+
+"@tanstack/vue-query-devtools@npm:^5.17.21":
+  version: 5.17.21
+  resolution: "@tanstack/vue-query-devtools@npm:5.17.21"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.17.21"
+  peerDependencies:
+    "@tanstack/vue-query": ^5.17.19
+    vue: ^3.3.0
+  checksum: 8bc0c12fcca4ff63adcc9212015b6fc54682dc9349396d297eb474aef909771ed95d6b607c7c4a57d3b91a0aac474f80b40a7b554af1522c2e3c2c833c5b2e40
+  languageName: node
+  linkType: hard
+
 "@tanstack/vue-query@npm:^5.17.19":
   version: 5.17.19
   resolution: "@tanstack/vue-query@npm:5.17.19"
@@ -4448,6 +4467,7 @@ __metadata:
   resolution: "vue-app@workspace:."
   dependencies:
     "@tanstack/vue-query": "npm:^5.17.19"
+    "@tanstack/vue-query-devtools": "npm:^5.17.21"
     "@types/eslint": "npm:^8"
     "@types/node": "npm:^20.11.5"
     "@types/tabulator-tables": "npm:^5.5.6"

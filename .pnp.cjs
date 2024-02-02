@@ -27,6 +27,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./",\
         "packageDependencies": [\
           ["@tanstack/vue-query", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.19"],\
+          ["@tanstack/vue-query-devtools", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.21"],\
           ["@types/eslint", "npm:8.56.2"],\
           ["@types/node", "npm:20.11.6"],\
           ["@types/tabulator-tables", "npm:5.32.1"],\
@@ -782,6 +783,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@tanstack/query-devtools", [\
+      ["npm:5.17.21", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@tanstack-query-devtools-npm-5.17.21-a517bd959a-10c0.zip/node_modules/@tanstack/query-devtools/",\
+        "packageDependencies": [\
+          ["@tanstack/query-devtools", "npm:5.17.21"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@tanstack/vue-query", [\
       ["npm:5.17.19", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@tanstack-vue-query-npm-5.17.19-d0ac518093-10c0.zip/node_modules/@tanstack/vue-query/",\
@@ -807,6 +817,33 @@ const RAW_RUNTIME_STATE =
           "@types/vue",\
           "@types/vue__composition-api",\
           "@vue/composition-api",\
+          "vue"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@tanstack/vue-query-devtools", [\
+      ["npm:5.17.21", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@tanstack-vue-query-devtools-npm-5.17.21-1e92ae6cbe-10c0.zip/node_modules/@tanstack/vue-query-devtools/",\
+        "packageDependencies": [\
+          ["@tanstack/vue-query-devtools", "npm:5.17.21"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.21", {\
+        "packageLocation": "./.yarn/__virtual__/@tanstack-vue-query-devtools-virtual-d1fb8f6bfd/4/AppData/Local/Yarn/Berry/cache/@tanstack-vue-query-devtools-npm-5.17.21-1e92ae6cbe-10c0.zip/node_modules/@tanstack/vue-query-devtools/",\
+        "packageDependencies": [\
+          ["@tanstack/vue-query-devtools", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.21"],\
+          ["@tanstack/query-devtools", "npm:5.17.21"],\
+          ["@tanstack/vue-query", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.19"],\
+          ["@types/tanstack__vue-query", null],\
+          ["@types/vue", null],\
+          ["vue", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:3.4.15"]\
+        ],\
+        "packagePeers": [\
+          "@tanstack/vue-query",\
+          "@types/tanstack__vue-query",\
+          "@types/vue",\
           "vue"\
         ],\
         "linkType": "HARD"\
@@ -5111,6 +5148,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["vue-app", "workspace:."],\
           ["@tanstack/vue-query", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.19"],\
+          ["@tanstack/vue-query-devtools", "virtual:ae95835550da6379c0321026f9c5cc3a76bfe832fad375b23617232c54852a05ef2409e2741b5a03813d7aa2a9a99f30a25f042356c248f4e622ab201795a360#npm:5.17.21"],\
           ["@types/eslint", "npm:8.56.2"],\
           ["@types/node", "npm:20.11.6"],\
           ["@types/tabulator-tables", "npm:5.32.1"],\

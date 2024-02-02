@@ -50,6 +50,13 @@ const configs = defineConfigs({
     normal: {
       width: 3,
     },
+    marker: {
+      target: {
+        type: "arrow",
+        width: 4,
+        height: 4,
+      },
+    }
   },
 })
 
